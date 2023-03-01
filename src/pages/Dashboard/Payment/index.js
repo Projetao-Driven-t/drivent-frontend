@@ -1,3 +1,7 @@
+import PaymentArea from './PaymenteArea';
+
 export default function Payment() {
-  return 'Pagamento: Em breve!';
+  return (
+    <PaymentArea />
+  );
 }
