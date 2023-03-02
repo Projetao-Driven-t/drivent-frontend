@@ -31,6 +31,11 @@ export default function Payment() {
     </Container>
   );
 }
+// import TicketSelection from '../../../components/Tickets/TicketSelection';
+
+// export default function Payment() {
+//   return <TicketSelection />;
+// }
 
 const Title = styled.h1`
   width: 43%;
@@ -90,3 +95,4 @@ const Types = styled.div`
   cursor: pointer;
   background-color: ${(props) => props.color};
 `;
+
