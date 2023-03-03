@@ -10,7 +10,7 @@ export default function usePostTicket() {
     loading: postTicketLoading,
     error: postTicketError,
     act: postTicket,
-  } = useAsync((data) => ticketApi.postTicket(data, token));
+  } = useAsync((data) => ticketApi.postTicket(data, token), false);
 
   return {
     postTicketLoading,
