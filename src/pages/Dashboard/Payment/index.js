@@ -1,3 +1,8 @@
+/* eslint-disable indent */
+import { useState } from 'react';
+import TicketSelection from '../../../components/Tickets/TicketSelection';
+
 export default function Payment() {
-  return 'Pagamento: Em breve!';
+  const [isThereTicket, setIsThereTicket] = useState(false);
+  return <>{!isThereTicket ? <TicketSelection /> : 'Tem ticket'}</>;
 }
