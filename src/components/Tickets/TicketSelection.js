@@ -1,20 +1,23 @@
-import { useRef, useState } from 'react';
+/* eslint-disable indent */
+import { useState } from 'react';
 import styled from 'styled-components';
+import { useFindTicketType } from '../../hooks/useReturnTicketsTypes';
 import { ticketTypes } from '../../mock/tickets';
 import { Summary } from './Summary';
 
 export default function TicketSelection() {
-  const ticketTypeOnline = useRef(ticketTypes.find((ticketType) => ticketType.isRemote));
-  const ticketTypeIncludesHotel = useRef(ticketTypes.find((ticketType) => ticketType.includesHotel));
-  const ticketTypeNotIncludesHotel = useRef(
-    ticketTypes.find((ticketType) => !ticketType.isRemote && !ticketType.includesHotel)
-  );
+  const { ticketTypeOnline, ticketTypeIncludesHotel, ticketTypeNotIncludesHotel } = useFindTicketType(ticketTypes);
+
+  const [ticketSelected, setTicketSelected] = useState({});
 
   const [ticketSelectedIsRemote, setTicketSelectedIsRemote] = useState(false);
   const [ticketSelectedIsInPerson, setTicketSelectedIsInPerson] = useState(false);
 
   const [ticketSelectedNotIncludesHotel, setTicketSelectedNotIncludesHotel] = useState(false);
   const [ticketSelectedIncludesHotel, setTicketSelectedIncludesHotel] = useState(false);
+
+  console.log(ticketSelected);
+  // TODO: refactor... handleTicketSelection()
 
   return (
     <>
@@ -32,6 +35,7 @@ export default function TicketSelection() {
           onClick={(e) => {
             setTicketSelectedIsRemote(!ticketSelectedIsRemote);
             setTicketSelectedIsInPerson(false);
+            setTicketSelected({ ...ticketTypeOnline.current });
           }}
           selected={ticketSelectedIsRemote}
         >
@@ -44,6 +48,7 @@ export default function TicketSelection() {
             onClick={(e) => {
               setTicketSelectedNotIncludesHotel(true);
               setTicketSelectedIncludesHotel(false);
+              setTicketSelected({ ...ticketTypeNotIncludesHotel.current });
             }}
             selected={ticketSelectedNotIncludesHotel}
           >
@@ -53,6 +58,7 @@ export default function TicketSelection() {
             onClick={(e) => {
               setTicketSelectedIncludesHotel(true);
               setTicketSelectedNotIncludesHotel(false);
+              setTicketSelected({ ...ticketTypeIncludesHotel.current });
             }}
             selected={ticketSelectedIncludesHotel}
           >
@@ -64,15 +70,9 @@ export default function TicketSelection() {
       )}
 
       <SummaryBox>
-        {ticketSelectedIsRemote ? <Summary value={ticketTypeOnline.current.price} /> : ''}
-        {ticketSelectedIsInPerson && (ticketSelectedNotIncludesHotel || ticketSelectedIncludesHotel) ? (
-          <Summary
-            value={
-              ticketSelectedNotIncludesHotel
-                ? ticketTypeNotIncludesHotel.current.price
-                : ticketTypeIncludesHotel.current.price
-            }
-          />
+        {ticketSelectedIsRemote ||
+        (ticketSelectedIsInPerson && (ticketSelectedNotIncludesHotel || ticketSelectedIncludesHotel)) ? (
+          <Summary ticketTypeId={ticketSelected.id} ticketTypePrice={ticketSelected.price} />
         ) : (
           ''
         )}

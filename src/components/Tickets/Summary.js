@@ -1,23 +1,41 @@
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import usePostTicket from '../../hooks/api/usePostTicket';
 import Button from '../Form/Button';
 
-export function Summary({ value }) {
+export function Summary({ ticketTypeId, ticketTypePrice }) {
+  const { postTicket } = usePostTicket();
+
+  async function sendTicketType() {
+    try {
+      await postTicket({ ticketTypeId });
+      toast('Informações salvas com sucesso!');
+    } catch (err) {
+      toast('Não foi possível salvar suas informações!');
+    }
+  }
+
   return (
     <SummaryStyle>
       <div>
-        <span>
-          Fechado! O total ficou em <strong>R$ {value}</strong>. Agora é só confirmar:
-        </span>
+        <h2>
+          Fechado! O total ficou em <strong>R$ {ticketTypePrice}</strong>. Agora é só confirmar:
+        </h2>
       </div>
-      <Button>RESERVAR INGRESSO</Button>
+      <Button onClick={() => sendTicketType()}>RESERVAR INGRESSO</Button>
     </SummaryStyle>
   );
 }
 
 const SummaryStyle = styled.div`
-  margin: 20px 0px;
+  h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #8e8e8e;
+    font-family: 'Roboto';
+  }
 
-  & span {
-    font-size: 20px;
+  button {
+    height: 37px;
   }
 `;

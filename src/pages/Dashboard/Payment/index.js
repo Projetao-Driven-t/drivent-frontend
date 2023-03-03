@@ -1,41 +1,98 @@
-import styled from 'styled-components';
+/* eslint-disable indent */
 import { useState } from 'react';
+import styled from 'styled-components';
+import { Summary } from '../../../components/Tickets/Summary';
 import useTicketType from '../../../hooks/api/useTicketTypes';
+import { useFindTicketType } from '../../../hooks/useReturnTicketsTypes';
 
 export default function Payment() {
-  const [RemoteClicked, setRemoteClicked] = useState(false);
-  const [PresentialClicked, setPresentialClicked] = useState(false);
-  const { ticketType } = useTicketType();
+  const { ticketTypes, ticketTypesLoading } = useTicketType();
 
-  console.log(ticketType);
+  const { ticketTypeOnline, ticketTypeIncludesHotel, ticketTypeNotIncludesHotel } = useFindTicketType(ticketTypes);
+
+  const [ticketSelectedIsRemote, setTicketSelectedIsRemote] = useState(false);
+  const [ticketSelectedIsInPerson, setTicketSelectedIsInPerson] = useState(false);
+
+  const [ticketSelectedNotIncludesHotel, setTicketSelectedNotIncludesHotel] = useState(false);
+  const [ticketSelectedIncludesHotel, setTicketSelectedIncludesHotel] = useState(false);
+
+  const [ticketSelected, setTicketSelected] = useState({});
 
   return (
     <Container>
-      <Title>Ingresso e pagamento</Title>
-      <ContainerTicketTypes>
-        <h2>Primeiro, escolha sua modalidade de ingresso</h2>
-        <Cont>
-          <Types
-            onClick={() => setPresentialClicked(!PresentialClicked)}
-            color={PresentialClicked ? '#FFEED2' : '#FFFFFF'}
-          >
-            <h3>Presencial</h3>
-            <h4>R$250</h4>
-          </Types>
-          <Types onClick={() => setRemoteClicked(!RemoteClicked)} color={RemoteClicked ? '#FFEED2' : '#FFFFFF'}>
-            <h3>Online</h3>
-            <h4>R$100</h4>
-          </Types>
-        </Cont>
-      </ContainerTicketTypes>
+      {!ticketTypesLoading ? (
+        <>
+          <Title>Ingresso e pagamento</Title>
+          <ContainerTicketTypes>
+            <h2>Primeiro, escolha sua modalidade de ingresso</h2>
+            <Cont>
+              <Types
+                onClick={(e) => {
+                  setTicketSelectedIsInPerson(!ticketSelectedIsInPerson);
+                  setTicketSelectedIsRemote(false);
+                }}
+                selected={ticketSelectedIsInPerson}
+              >
+                <h3>Presencial</h3>
+                <h4>R$ {ticketTypeNotIncludesHotel.price}</h4>
+              </Types>
+              <Types
+                onClick={(e) => {
+                  setTicketSelectedIsRemote(!ticketSelectedIsRemote);
+                  setTicketSelectedIsInPerson(false);
+                  setTicketSelected({ ...ticketTypeOnline });
+                }}
+                selected={ticketSelectedIsRemote}
+              >
+                <h3>Online</h3>
+                <h4>R$ {ticketTypeOnline.price}</h4>
+              </Types>
+            </Cont>
+          </ContainerTicketTypes>
+          {ticketSelectedIsInPerson ? (
+            <ContainerTicketTypes>
+              <h2>Ótimo! Agora escolha sua modalidade de hospedagem</h2>
+              <Cont>
+                <Types
+                  onClick={(e) => {
+                    setTicketSelectedNotIncludesHotel(true);
+                    setTicketSelectedIncludesHotel(false);
+                    setTicketSelected({ ...ticketTypeNotIncludesHotel });
+                  }}
+                  selected={ticketSelectedNotIncludesHotel}
+                >
+                  <h3>Sem Hotel</h3>
+                  <h4>+ R$ 0</h4>
+                </Types>
+                <Types
+                  onClick={(e) => {
+                    setTicketSelectedIncludesHotel(true);
+                    setTicketSelectedNotIncludesHotel(false);
+                    setTicketSelected({ ...ticketTypeIncludesHotel });
+                  }}
+                  selected={ticketSelectedIncludesHotel}
+                >
+                  <h3>Com Hotel</h3>
+                  <h4>+ R$ {ticketTypeIncludesHotel.price - ticketTypeNotIncludesHotel.price}</h4>
+                </Types>
+              </Cont>
+            </ContainerTicketTypes>
+          ) : (
+            ''
+          )}
+          {ticketSelectedIsRemote ||
+          (ticketSelectedIsInPerson && (ticketSelectedNotIncludesHotel || ticketSelectedIncludesHotel)) ? (
+            <Summary ticketTypeId={ticketSelected.id} ticketTypePrice={ticketSelected.price} />
+          ) : (
+            ''
+          )}{' '}
+        </>
+      ) : (
+        ''
+      )}
     </Container>
   );
 }
-// import TicketSelection from '../../../components/Tickets/TicketSelection';
-
-// export default function Payment() {
-//   return <TicketSelection />;
-// }
 
 const Title = styled.h1`
   width: 43%;
@@ -52,9 +109,10 @@ const Container = styled.div`
 `;
 
 const ContainerTicketTypes = styled.div`
-  height: 180px;
-  width: 50%;
+  /* height: 180px; */
+  width: 100%;
   overflow: hidden;
+  margin-bottom: 25px;
 
   h2 {
     font-size: 18px;
@@ -77,22 +135,20 @@ const ContainerTicketTypes = styled.div`
 const Cont = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  width: 60%;
-  height: auto;
+  justify-content: flex-start;
 `;
 
 const Types = styled.div`
-  margin-top: 10px;
-  width: 45%;
-  height: 110px;
+  margin: 10px 20px 0px 0px;
+  width: 145px;
+  height: 145px;
   border: 1px solid #cecece;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  background-color: ${(props) => (props.selected ? '#FFEED2' : '#FFF')};
   cursor: pointer;
-  background-color: ${(props) => props.color};
 `;
-
