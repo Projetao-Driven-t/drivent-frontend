@@ -5,16 +5,17 @@ import useTicket from '../../../hooks/api/useTicket';
 export default function PaymentArea() {
   const { ticket } = useTicket();
 
-  console.log(ticket, 'AKI TAAAAAAA TICKETTTTTT');
+  console.log(ticket.TicketType.name, 'AKI TAAAAAAA TICKETTTTTT');
 
   return (
     <>
       <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
       <>ingresso escolhido</>
       <BotaoTemporario>
-        <h1>Lógica</h1>
-        <h2>R$800,00</h2>
+        <h1>{ticket.TicketType.name}</h1>
+        <h2>R$ {ticket.TicketType.price.toFixed(2).replace('.', ',')}</h2>
       </BotaoTemporario>
+      <>Pagamento</>
     </>
   );
 }
@@ -33,6 +34,7 @@ const BotaoTemporario = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom:30px;
 
   h1 {
     font-family: 'Roboto';
