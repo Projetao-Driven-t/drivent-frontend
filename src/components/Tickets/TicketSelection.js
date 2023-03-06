@@ -5,7 +5,7 @@ import useTicketType from '../../hooks/api/useTicketTypes';
 import { useFindTicketType } from '../../hooks/useReturnTicketsTypes';
 import { Summary } from './Summary';
 
-export default function TicketSelection() {
+export default function TicketSelection({ setTicketUser }) {
   const { ticketTypes, ticketTypesLoading } = useTicketType();
 
   const { ticketTypeOnline, ticketTypeIncludesHotel, ticketTypeNotIncludesHotel } = useFindTicketType(ticketTypes);
@@ -82,7 +82,11 @@ export default function TicketSelection() {
           )}
           {ticketSelectedIsRemote ||
           (ticketSelectedIsInPerson && (ticketSelectedNotIncludesHotel || ticketSelectedIncludesHotel)) ? (
-            <Summary ticketTypeId={ticketSelected.id} ticketTypePrice={ticketSelected.price} />
+            <Summary
+              setTicketUser={setTicketUser}
+              ticketTypeId={ticketSelected.id}
+              ticketTypePrice={ticketSelected.price}
+            />
           ) : (
             ''
           )}{' '}

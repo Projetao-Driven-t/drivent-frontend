@@ -1,24 +1,18 @@
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import useTicket from '../../../hooks/api/useTicket';
 import React, { useState } from 'react';
 import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
 
 import Button from '../../../components/Form/Button';
 
-export default function PaymentArea() {
-  const { ticket, ticketLoading } = useTicket();
+export default function PaymentArea({ ticket }) {
   const [number, setNumber] = useState('');
   const [name, setName] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvc, setCvc] = useState('');
   const [focus, setFocus] = useState('');
-
-  if (ticketLoading) {
-    return <>Loading...</>;
-  }
-
+  console.log(ticket, 'PAYMENTAREA');
   return (
     <>
       <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
@@ -108,14 +102,14 @@ const BotaoTemporario = styled.div`
 
 const CardInformations = styled.div`
   margin-top: 24px;
-  display:flex; 
-  align-items:center;
+  display: flex;
+  align-items: center;
 `;
 
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-right:300px;
+  margin-right: 300px;
 
   input {
     padding: 0.375rem 0.75rem;
