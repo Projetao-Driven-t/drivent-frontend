@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { useState } from 'react';
 import ShowWarning from '../../../components/Dashboard/Content/ShowWarning';
 import TicketSelection from '../../../components/Tickets/TicketSelection';
