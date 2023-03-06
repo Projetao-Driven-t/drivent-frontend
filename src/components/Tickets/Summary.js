@@ -3,12 +3,13 @@ import styled from 'styled-components';
 import usePostTicket from '../../hooks/api/usePostTicket';
 import Button from '../Form/Button';
 
-export function Summary({ ticketTypeId, ticketTypePrice }) {
+export function Summary({ ticketTypeId, ticketTypePrice, setTicketUser }) {
   const { postTicket } = usePostTicket();
 
   async function sendTicketType() {
     try {
-      await postTicket({ ticketTypeId });
+      const ticketReceived = await postTicket({ ticketTypeId });
+      setTicketUser({ ...ticketReceived });
       toast('Informações salvas com sucesso!');
     } catch (err) {
       toast('Não foi possível salvar suas informações!');
