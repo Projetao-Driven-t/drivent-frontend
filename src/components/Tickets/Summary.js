@@ -10,7 +10,6 @@ export function Summary({ ticketTypeId, ticketTypePrice, setTicketUser }) {
     try {
       const ticketReceived = await postTicket({ ticketTypeId });
       setTicketUser({ ...ticketReceived });
-      console.log(ticketReceived, 'SUMMARY');
       toast('Informações salvas com sucesso!');
     } catch (err) {
       toast('Não foi possível salvar suas informações!');

@@ -18,7 +18,6 @@ export default function Payment() {
   if (ticketLoading) {
     return <>Loading...</>;
   }
-  console.log(ticketUser, 'INDEX TICKETUSER');
-  console.log(ticket, 'INDEX TICKEt');
-  return <>{ticketUser.id ? <PaymentArea ticket={ticketUser} /> : <TicketSelection setTicketUser={setTicketUser} />}</>;
+  return <>{ticketUser.id ? <PaymentArea ticket={ticketUser} setTicketUser={setTicketUser}/> : <TicketSelection setTicketUser={setTicketUser} />}</>;
 }
+

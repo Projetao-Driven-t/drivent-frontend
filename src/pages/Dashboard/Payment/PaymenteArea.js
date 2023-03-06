@@ -3,16 +3,40 @@ import styled from 'styled-components';
 import React, { useState } from 'react';
 import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
-
+import iconCheck from '../../../assets/images/check.png';
+import { toast } from 'react-toastify';
 import Button from '../../../components/Form/Button';
+import usePayment from '../../../hooks/api/usePayment';
 
-export default function PaymentArea({ ticket }) {
+export default function PaymentArea({ ticket, setTicketUser }) {
+  const { paymentProcess } = usePayment();
+
   const [number, setNumber] = useState('');
   const [name, setName] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvc, setCvc] = useState('');
   const [focus, setFocus] = useState('');
-  console.log(ticket, 'PAYMENTAREA');
+
+  async function sendPayment() {
+    const body = {
+      ticketId: ticket.id,
+      cardData: {
+        issuer: 'VISA',
+        number: parseInt(number),
+        name: name,
+        expirationDate: expiry,
+        cvv: cvc,
+      },
+    };
+    try {
+      await paymentProcess(body);
+      setTicketUser({ ...ticket, status: 'PAID' });
+      toast('Informações salvas com sucesso!');
+    } catch (err) {
+      toast('Não foi possível salvar suas informações!');
+    }
+  }
+
   return (
     <>
       <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
@@ -22,45 +46,60 @@ export default function PaymentArea({ ticket }) {
         <h2>R$ {ticket.TicketType.price.toFixed(2).replace('.', ',')}</h2>
       </BotaoTemporario>
       <>Pagamento</>
-      <CardInformations>
-        <Cards number={number} name={name} expiry={expiry} cvc={cvc} focused={focus} />
-        <InputContainer>
-          <input
-            type="number"
-            name="number"
-            placeholder="Card Number"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            onFocus={(e) => setFocus(e.target.name)}
-          />
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onFocus={(e) => setFocus(e.target.name)}
-          />
-          <input
-            type="tel"
-            name="expiry"
-            placeholder="Valid Thru"
-            value={expiry}
-            onChange={(e) => setExpiry(e.target.value)}
-            onFocus={(e) => setFocus(e.target.name)}
-          />
-          <input
-            type="number"
-            name="cvc"
-            placeholder="CVC"
-            value={cvc}
-            onChange={(e) => setCvc(e.target.value)}
-            onFocus={(e) => setFocus(e.target.name)}
-          />
-        </InputContainer>
-      </CardInformations>
+      {ticket.status === 'PAID' ? (
+        <div>
+          <img src={iconCheck} alt="icon check" />
+          <div>
+            <h2>
+              <strong>Pagamento confirmado!</strong>
+            </h2>
+            <h2>Prossiga para escolha de hospedagem e atividades</h2>
+          </div>
+        </div>
+      ) : (
+        <CardInformations>
+          <Cards number={number} name={name} expiry={expiry} cvc={cvc} focused={focus} />
+          <InputContainer>
+            <input
+              type="number"
+              name="number"
+              placeholder="Card Number"
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+              onFocus={(e) => setFocus(e.target.name)}
+            />
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onFocus={(e) => setFocus(e.target.name)}
+            />
+            <input
+              type="tel"
+              name="expiry"
+              placeholder="Valid Thru"
+              value={expiry}
+              onChange={(e) => setExpiry(e.target.value)}
+              onFocus={(e) => setFocus(e.target.name)}
+            />
+            <input
+              type="number"
+              name="cvc"
+              placeholder="CVC"
+              value={cvc}
+              onChange={(e) => setCvc(e.target.value)}
+              onFocus={(e) => setFocus(e.target.name)}
+            />
+          </InputContainer>
+        </CardInformations>
+      )}
+
       <SubmitContainer>
-        <Button type="submit">Finalizar Pagamento</Button>
+        <Button type="submit" onClick={sendPayment}>
+          Finalizar Pagamento
+        </Button>
       </SubmitContainer>
     </>
   );
