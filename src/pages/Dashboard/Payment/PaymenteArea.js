@@ -1,10 +1,10 @@
 import Typography from '@material-ui/core/Typography';
-import styled from 'styled-components';
 import React, { useState } from 'react';
 import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
-import iconCheck from '../../../assets/images/check.png';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
+import iconCheck from '../../../assets/images/check.png';
 import Button from '../../../components/Form/Button';
 import usePayment from '../../../hooks/api/usePayment';
 
@@ -16,12 +16,13 @@ export default function PaymentArea({ ticket, setTicketUser }) {
   const [expiry, setExpiry] = useState('');
   const [cvc, setCvc] = useState('');
   const [focus, setFocus] = useState('');
+  const [issuer, setIssuer] = useState('');
 
   async function sendPayment() {
     const body = {
       ticketId: ticket.id,
       cardData: {
-        issuer: 'VISA',
+        issuer: issuer.toUpperCase(),
         number: parseInt(number),
         name: name,
         expirationDate: expiry,
@@ -34,6 +35,12 @@ export default function PaymentArea({ ticket, setTicketUser }) {
       toast('Informações salvas com sucesso!');
     } catch (err) {
       toast('Não foi possível salvar suas informações!');
+    }
+  }
+
+  function handleCardCallback({ issuer }, isValid) {
+    if (isValid) {
+      setIssuer(issuer);
     }
   }
 
@@ -59,7 +66,14 @@ export default function PaymentArea({ ticket, setTicketUser }) {
       ) : (
         <>
           <CardInformations>
-            <Cards number={number} name={name} expiry={expiry} cvc={cvc} focused={focus} />
+            <Cards
+              callback={handleCardCallback}
+              number={number}
+              name={name}
+              expiry={expiry}
+              cvc={cvc}
+              focused={focus}
+            />
             <InputContainer>
               <input
                 type="number"
