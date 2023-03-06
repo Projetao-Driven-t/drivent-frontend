@@ -27,9 +27,7 @@ const Mensagem = styled.div`
 
 const NoEnrrollment = styled.div`
   height: 90%;
-  margin-left: 35px;
   & > h1 {
     font-size: 34px;
-    margin-top: 34px;
   }
 `;
