@@ -113,13 +113,12 @@ const Container = styled.div`
 `;
 
 const ContainerTicketTypes = styled.div`
-  /* height: 180px; */
   width: 100%;
   overflow: hidden;
   margin-bottom: 25px;
 
   h2 {
-    font-size: 18px;
+    font-size: 20px;
     margin-bottom: 10px;
     color: #8e8e8e;
     font-family: 'Roboto';
