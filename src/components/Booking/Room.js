@@ -42,7 +42,7 @@ const RoomStyled = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  margin: 15px 0px 0px;
+  margin: 10px 0px 0px;
   padding: 0 15px;
   border: 1px solid #cecece;
   border-radius: 10px;

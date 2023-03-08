@@ -49,7 +49,7 @@ export function RoomSelection() {
 
   return (
     <RoomSelectionStyle>
-      <h1>Room Selections</h1>
+      <Subtitle>Ótima pedida! Agora escolha seu quarto</Subtitle>
       <Rooms>
         {rooms.map((room) => (
           <Room
@@ -79,13 +79,25 @@ const RoomSelectionStyle = styled.div`
   }
 `;
 
+const Subtitle = styled.span`
+  font-family: 'Roboto';
+  font-size: 20px;
+  line-height: 23.5px;
+  color: #8e8e8e;
+`;
+
 const Rooms = styled.div`
   width: 100%;
 
-  margin: 15px 0px;
+  margin: 30px 0px;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+
+  @media (max-width: 600px) {
+    gap: 10px;
+    justify-content: center;
+  }
 `;
