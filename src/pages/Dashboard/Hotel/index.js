@@ -1,3 +1,5 @@
+import { RoomSelection } from '../../../components/Booking/RoomSelection';
+
 export default function Hotel() {
-  return 'Hotel: Em breve!';
+  return <RoomSelection />;
 }
