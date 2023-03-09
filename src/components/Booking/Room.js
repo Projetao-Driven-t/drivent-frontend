@@ -3,7 +3,11 @@ import availableIcon from '../../assets/images/availableIcon.png';
 import occupiedIcon from '../../assets/images/occupiedIcon.png';
 import selectedIcon from '../../assets/images/selectedIcon.png';
 
-export function Room({ id, name, capacity, occupation, isSelected, handleRoomSelection }) {
+export function Room({ id, name, capacity, occupation, isSelected, isRoomChange, handleRoomSelection }) {
+  if (isRoomChange) {
+    occupation--;
+  }
+
   const disabled = capacity === occupation;
 
   const vacancies = Array.apply(null, Array(capacity)).map((_, index) => {

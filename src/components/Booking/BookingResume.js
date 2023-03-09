@@ -1,8 +1,9 @@
 import Typography from '@material-ui/core/Typography';
-import styled from 'styled-components';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import Button from '../Form/Button';
 
-export default function BookinResume({ booking }) {
+export default function BookingResume({ booking, changeBooking, setShowSelectHotel, setShowResume }) {
   const [roomCapacity, setRoomCapacity] = useState('');
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function BookinResume({ booking }) {
   }, [roomCapacity]);
 
   return (
-    <>
+    <BookingResumeStyle>
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
       <Subtitle>Você já escolheu seu quarto</Subtitle>
       <ResumeContainer>
@@ -31,9 +32,20 @@ export default function BookinResume({ booking }) {
         <h2>Pessoas no seu quarto</h2>
         <h3>Você e </h3>
       </ResumeContainer>
-    </>
+      <Button onClick={changeBooking}>TROCAR QUARTO</Button>
+    </BookingResumeStyle>
   );
 }
+
+const BookingResumeStyle = styled.div`
+  button {
+    height: 37px;
+    background: #e0e0e0;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    border: none;
+  }
+`;
 
 const StyledTypography = styled(Typography)`
   margin-bottom: 20px !important;
@@ -84,12 +96,12 @@ const ResumeContainer = styled.div`
     margin-top: 14px;
   }
 
-  h3{
+  h3 {
     font-style: normal;
     font-weight: 400;
     font-size: 12px;
     line-height: 14px;
-    color: #3C3C3C;
-    margin-top:2px;
+    color: #3c3c3c;
+    margin-top: 2px;
   }
 `;
