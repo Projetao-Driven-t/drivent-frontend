@@ -3,34 +3,39 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from '../Form/Button';
 
-export default function BookingResume({ booking, changeBooking, setShowSelectHotel, setShowResume }) {
+export default function BookingResume({ bookingUser, setShowHotelSelection, setShowBookingResume }) {
   const [roomCapacity, setRoomCapacity] = useState('');
 
   useEffect(() => {
-    if (booking.Room.capacity === 1) {
+    if (bookingUser.Room.capacity === 1) {
       setRoomCapacity('Single');
     }
-    if (booking.Room.capacity === 2) {
+    if (bookingUser.Room.capacity === 2) {
       setRoomCapacity('Double');
     }
-    if (booking.Room.capacity === 3) {
+    if (bookingUser.Room.capacity === 3) {
       setRoomCapacity('Triple');
     }
   }, [roomCapacity]);
+
+  function changeBooking() {
+    setShowHotelSelection(true);
+    setShowBookingResume(false);
+  }
 
   return (
     <BookingResumeStyle>
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
       <Subtitle>Você já escolheu seu quarto</Subtitle>
       <ResumeContainer>
-        <img src={booking.Room.Hotel.image} alt={'hotel'} />
-        <h1>{booking.Room.Hotel.name}</h1>
+        <img src={bookingUser.Room.Hotel.image} alt={'hotel'} />
+        <h1>{bookingUser.Room.Hotel.name}</h1>
         <h2>Quarto reservado</h2>
         <h3>
-          {booking.Room.name} ({roomCapacity})
+          {bookingUser.Room.name} ({roomCapacity})
         </h3>
         <h2>Pessoas no seu quarto</h2>
-        <h3>Você e </h3>
+        <h3>Você e mais {bookingUser.Room._count.Booking - 1}</h3>
       </ResumeContainer>
       <Button onClick={changeBooking}>TROCAR QUARTO</Button>
     </BookingResumeStyle>

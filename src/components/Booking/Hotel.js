@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
-export function Hotel({ image, name, booking }) {
+export function Hotel({ image, name, id, handleHotelSelection }) {
   return (
-    <StyledHotel>
-      <img src={image} alt="owow" />
+    <StyledHotel onClick={() => handleHotelSelection(id)}>
+      <img src={image} alt={'Hotel imagem'} />
       <h1>{name}</h1>
       <Acomodar>
         <h2>Tipos de acomodação:</h2>
