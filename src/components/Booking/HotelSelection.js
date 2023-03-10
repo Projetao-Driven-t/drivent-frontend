@@ -28,6 +28,7 @@ export function HotelSelection({ setHotelSelected, setShowRoomSelection }) {
             id={hotel.id}
             name={hotel.name}
             image={hotel.image}
+            rooms={hotel.Rooms}
             handleHotelSelection={handleHotelSelection}
           />
         ))}
