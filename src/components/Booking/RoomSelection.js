@@ -1,46 +1,69 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-import useBooking from '../../hooks/api/useBooking';
-import useHotelById from '../../hooks/api/useHotelById';
+import useGetBooking from '../../hooks/api/useGetBooking';
+import usePostBooking from '../../hooks/api/usePostBooking';
+import useUpdateBooking from '../../hooks/api/useUpdateBooking';
 import Button from '../Form/Button';
 import { Room } from './Room';
 
-const hotelId = 2;
-export function RoomSelection() {
-  const { hotel } = useHotelById(hotelId);
+export default function RoomSelection({
+  hotelSelected,
+  roomSelected,
+  setRoomSelected,
+  bookingUser,
+  setBookingUser,
+  setShowHotelSelection,
+  setShowRoomSelection,
+  setShowBookingResume,
+}) {
+  const isItRoomChange = Boolean(bookingUser.id);
+  const roomIdPreviousSelected = isItRoomChange ? bookingUser.Room.id : 0;
+
+  const { postBooking } = usePostBooking();
+  const { updateBooking } = useUpdateBooking();
+  const { getBooking } = useGetBooking();
+
   const [rooms, setRooms] = useState([]);
-  console.log(hotel);
-
-  const roomIdSelected = useRef(0);
-
-  const { postBooking } = useBooking();
 
   useEffect(() => {
-    if (hotel) {
+    if (hotelSelected) {
       setRooms(
-        hotel.Rooms.sort((a, b) => {
+        hotelSelected.Rooms.sort((a, b) => {
           return a.name - b.name;
         }).map((room) => ({
           id: room.id,
+          hotelId: hotelSelected.id,
           name: room.name,
           capacity: room.capacity,
           occupation: room._count.Booking,
-          isSelected: false,
+          isSelected: roomIdPreviousSelected === room.id,
+          isRoomChange: isItRoomChange && roomIdPreviousSelected === room.id,
         }))
       );
     }
-  }, [hotel]);
+  }, [hotelSelected]);
 
   function handleRoomSelection(id) {
-    setRooms(rooms.map((room) => (room.id === id ? { ...room, isSelected: true } : { ...room, isSelected: false })));
-    roomIdSelected.current = id;
+    const newRooms = rooms.map((room) =>
+      room.id === id ? { ...room, isSelected: true } : { ...room, isSelected: false }
+    );
+    setRooms(newRooms);
+    setRoomSelected(newRooms.find((room) => room.isSelected));
   }
 
   async function sendBooking() {
-    if (roomIdSelected.current) {
+    if (roomSelected) {
       try {
-        await postBooking({ roomId: roomIdSelected.current });
+        if (!isItRoomChange) {
+          await postBooking({ roomId: roomSelected.id });
+        } else if (roomSelected.id !== roomIdPreviousSelected) {
+          await updateBooking(bookingUser.id, { roomId: roomSelected.id });
+        }
+        setBookingUser(await getBooking());
+        setShowBookingResume(true);
+        setShowRoomSelection(false);
+        setShowHotelSelection(false);
         toast('Informações salvas com sucesso!');
       } catch (err) {
         toast('Não foi possível salvar suas informações!');
@@ -60,11 +83,16 @@ export function RoomSelection() {
             capacity={room.capacity}
             occupation={room.occupation}
             isSelected={room.isSelected}
+            isRoomChange={room.isRoomChange}
             handleRoomSelection={handleRoomSelection}
           />
         ))}
       </Rooms>
-      {roomIdSelected.current !== 0 ? <Button onClick={sendBooking}>RESERVAR QUARTO</Button> : ''}
+      {roomSelected.id && roomSelected.hotelId === hotelSelected.id ? (
+        <Button onClick={sendBooking}>RESERVAR QUARTO</Button>
+      ) : (
+        ''
+      )}
     </RoomSelectionStyle>
   );
 }
