@@ -1,20 +1,34 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-import useBooking from '../../hooks/api/useBooking';
+import useGetBooking from '../../hooks/api/useGetBooking';
 import useHotelById from '../../hooks/api/useHotelById';
+import usePostBooking from '../../hooks/api/usePostBooking';
+import useUpdateBooking from '../../hooks/api/useUpdateBooking';
 import Button from '../Form/Button';
 import { Room } from './Room';
 
-const hotelId = 2;
-export function RoomSelection() {
-  const { hotel } = useHotelById(hotelId);
+export default function RoomSelection({
+  hotelSelected,
+  roomSelected,
+  setRoomSelected,
+  bookingUser,
+  setBookingUser,
+  setShowSelectHotel,
+  setShowSelectRoom,
+  setShowResume,
+}) {
+  const isItRoomChange = Boolean(bookingUser.id);
+  const roomIdPreviousSelected = isItRoomChange ? bookingUser.Room.id : 0;
+
+  const { hotel } = useHotelById(hotelSelected.id);
+
+  const { postBooking } = usePostBooking();
+  const { updateBooking } = useUpdateBooking();
+  const { getBooking } = useGetBooking();
+
   const [rooms, setRooms] = useState([]);
   console.log(hotel);
-
-  const roomIdSelected = useRef(0);
-
-  const { postBooking } = useBooking();
 
   useEffect(() => {
     if (hotel) {
@@ -26,21 +40,33 @@ export function RoomSelection() {
           name: room.name,
           capacity: room.capacity,
           occupation: room._count.Booking,
-          isSelected: false,
+          isSelected: roomIdPreviousSelected === room.id,
+          isRoomChange: isItRoomChange && roomIdPreviousSelected === room.id,
         }))
       );
     }
   }, [hotel]);
 
   function handleRoomSelection(id) {
-    setRooms(rooms.map((room) => (room.id === id ? { ...room, isSelected: true } : { ...room, isSelected: false })));
-    roomIdSelected.current = id;
+    const newRooms = rooms.map((room) =>
+      room.id === id ? { ...room, isSelected: true } : { ...room, isSelected: false }
+    );
+    setRooms(newRooms);
+    setRoomSelected(newRooms.find((room) => room.isSelected));
   }
 
   async function sendBooking() {
-    if (roomIdSelected.current) {
+    if (roomSelected) {
       try {
-        await postBooking({ roomId: roomIdSelected.current });
+        if (!isItRoomChange) {
+          const { bookingId } = await postBooking({ roomId: roomSelected.id });
+          setBookingUser(await getBooking({ bookingId }));
+        } else if (roomSelected.id !== roomIdPreviousSelected) {
+          await updateBooking(bookingUser.id, { roomId: roomSelected.id });
+        }
+        setShowResume(true);
+        setShowSelectRoom(false);
+        setShowSelectHotel(false);
         toast('Informações salvas com sucesso!');
       } catch (err) {
         toast('Não foi possível salvar suas informações!');
@@ -60,11 +86,12 @@ export function RoomSelection() {
             capacity={room.capacity}
             occupation={room.occupation}
             isSelected={room.isSelected}
+            isRoomChange={room.isRoomChange}
             handleRoomSelection={handleRoomSelection}
           />
         ))}
       </Rooms>
-      {roomIdSelected.current !== 0 ? <Button onClick={sendBooking}>RESERVAR QUARTO</Button> : ''}
+      {roomSelected.id !== 0 ? <Button onClick={sendBooking}>RESERVAR QUARTO</Button> : ''}
     </RoomSelectionStyle>
   );
 }
