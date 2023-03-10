@@ -28,6 +28,7 @@ export default function RoomSelection({
   const { getBooking } = useGetBooking();
 
   const [rooms, setRooms] = useState([]);
+  console.log(hotel);
 
   useEffect(() => {
     if (hotel) {

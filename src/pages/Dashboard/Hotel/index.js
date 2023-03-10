@@ -60,3 +60,12 @@ export default function Hotel() {
     </>
   );
 }
+
+const Title = styled.h1`
+  font-family: 'Roboto';
+  font-weight: bold;
+  font-size: 34px;
+  line-height: 40px;
+  color: #000000;
+  margin-bottom: 30px;
+`;
