@@ -1,19 +1,12 @@
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import BookingResume from '../../../components/Booking/BookingResume';
+import { HotelSelection } from '../../../components/Booking/HotelSelection';
 import RoomSelection from '../../../components/Booking/RoomSelection';
 import useGetBooking from '../../../hooks/api/useGetBooking';
 
-const hotelMock = {
-  id: 1,
-  name: 'Cezar Hotel',
-  image:
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0mL5gqDkFwnbR1HUV8TRQoKhVW8PHxqJLoi7gEKX-HPobhqywMsApMXBTTkCzF_l_-Kc&usqp=CAU',
-  createdAt: '2023-03-07T00:15:19.654Z',
-  updatedAt: '2023-03-07T00:15:19.655Z',
-};
-
 export default function Hotel() {
-  const [hotelSelected, setHotelSelected] = useState(hotelMock);
+  const [hotelSelected, setHotelSelected] = useState({});
   const [roomSelected, setRoomSelected] = useState({});
   const [bookingUser, setBookingUser] = useState({});
 
@@ -26,6 +19,9 @@ export default function Hotel() {
   useEffect(() => {
     if (booking) {
       setBookingUser(booking);
+      setShowSelectHotel(false);
+      setShowSelectRoom(false);
+      setShowResume(true);
     }
   }, [booking]);
 
@@ -34,14 +30,19 @@ export default function Hotel() {
   }
 
   function changeBooking() {
-    getBooking();
+    // getBooking();
     setShowResume(false);
     setShowSelectHotel(true);
   }
 
   return (
     <>
-      {showSelectHotel ? <h1 onClick={() => setShowSelectRoom(true)}>Seleção de Hotel</h1> : ''}
+      <Title>Escolha de hotel e quarto</Title>
+      {showSelectHotel ? (
+        <HotelSelection setHotelSelected={setHotelSelected} setShowSelectRoom={setShowSelectRoom} />
+      ) : (
+        ''
+      )}
       {showSelectRoom ? (
         <RoomSelection
           hotelSelected={hotelSelected}
@@ -56,7 +57,11 @@ export default function Hotel() {
       ) : (
         ''
       )}
-      {showResume ? <BookingResume booking={bookingUser} changeBooking={changeBooking} /> : ''}
+      {showResume ? (
+        <BookingResume booking={bookingUser} roomSelected={roomSelected} changeBooking={changeBooking} />
+      ) : (
+        ''
+      )}
     </>
   );
 }

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import useGetBooking from '../../hooks/api/useGetBooking';
-import useHotelById from '../../hooks/api/useHotelById';
 import usePostBooking from '../../hooks/api/usePostBooking';
 import useUpdateBooking from '../../hooks/api/useUpdateBooking';
 import Button from '../Form/Button';
@@ -21,22 +20,20 @@ export default function RoomSelection({
   const isItRoomChange = Boolean(bookingUser.id);
   const roomIdPreviousSelected = isItRoomChange ? bookingUser.Room.id : 0;
 
-  const { hotel } = useHotelById(hotelSelected.id);
-
   const { postBooking } = usePostBooking();
   const { updateBooking } = useUpdateBooking();
   const { getBooking } = useGetBooking();
 
   const [rooms, setRooms] = useState([]);
-  console.log(hotel);
 
   useEffect(() => {
-    if (hotel) {
+    if (hotelSelected) {
       setRooms(
-        hotel.Rooms.sort((a, b) => {
+        hotelSelected.Rooms.sort((a, b) => {
           return a.name - b.name;
         }).map((room) => ({
           id: room.id,
+          hotelId: hotelSelected.id,
           name: room.name,
           capacity: room.capacity,
           occupation: room._count.Booking,
@@ -45,7 +42,7 @@ export default function RoomSelection({
         }))
       );
     }
-  }, [hotel]);
+  }, [hotelSelected]);
 
   function handleRoomSelection(id) {
     const newRooms = rooms.map((room) =>
@@ -59,11 +56,11 @@ export default function RoomSelection({
     if (roomSelected) {
       try {
         if (!isItRoomChange) {
-          const { bookingId } = await postBooking({ roomId: roomSelected.id });
-          setBookingUser(await getBooking({ bookingId }));
+          await postBooking({ roomId: roomSelected.id });
         } else if (roomSelected.id !== roomIdPreviousSelected) {
           await updateBooking(bookingUser.id, { roomId: roomSelected.id });
         }
+        setBookingUser(await getBooking());
         setShowResume(true);
         setShowSelectRoom(false);
         setShowSelectHotel(false);
@@ -73,6 +70,8 @@ export default function RoomSelection({
       }
     }
   }
+
+  console.log(roomSelected);
 
   return (
     <RoomSelectionStyle>
@@ -91,7 +90,11 @@ export default function RoomSelection({
           />
         ))}
       </Rooms>
-      {roomSelected.id !== 0 ? <Button onClick={sendBooking}>RESERVAR QUARTO</Button> : ''}
+      {roomSelected.id && roomSelected.hotelId === hotelSelected.id ? (
+        <Button onClick={sendBooking}>RESERVAR QUARTO</Button>
+      ) : (
+        ''
+      )}
     </RoomSelectionStyle>
   );
 }

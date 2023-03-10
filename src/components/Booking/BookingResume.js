@@ -3,17 +3,17 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from '../Form/Button';
 
-export default function BookingResume({ booking, changeBooking, setShowSelectHotel, setShowResume }) {
+export default function BookingResume({ booking, roomSelected, changeBooking, setShowSelectHotel, setShowResume }) {
   const [roomCapacity, setRoomCapacity] = useState('');
 
   useEffect(() => {
-    if (booking.Room.capacity === 1) {
+    if (roomSelected.capacity === 1) {
       setRoomCapacity('Single');
     }
-    if (booking.Room.capacity === 2) {
+    if (roomSelected.capacity === 2) {
       setRoomCapacity('Double');
     }
-    if (booking.Room.capacity === 3) {
+    if (roomSelected.capacity === 3) {
       setRoomCapacity('Triple');
     }
   }, [roomCapacity]);
@@ -27,10 +27,10 @@ export default function BookingResume({ booking, changeBooking, setShowSelectHot
         <h1>{booking.Room.Hotel.name}</h1>
         <h2>Quarto reservado</h2>
         <h3>
-          {booking.Room.name} ({roomCapacity})
+          {roomSelected.name} ({roomCapacity})
         </h3>
         <h2>Pessoas no seu quarto</h2>
-        <h3>Você e </h3>
+        <h3>Você e mais {roomSelected.occupation}</h3>
       </ResumeContainer>
       <Button onClick={changeBooking}>TROCAR QUARTO</Button>
     </BookingResumeStyle>
