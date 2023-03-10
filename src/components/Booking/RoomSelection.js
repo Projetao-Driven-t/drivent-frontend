@@ -10,6 +10,7 @@ const hotelId = 2;
 export function RoomSelection() {
   const { hotel } = useHotelById(hotelId);
   const [rooms, setRooms] = useState([]);
+  console.log(hotel);
 
   const roomIdSelected = useRef(0);
 
