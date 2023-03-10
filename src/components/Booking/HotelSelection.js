@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import useHotel from '../../hooks/api/useHotel';
 import { Hotel } from './Hotel';
 
-export function HotelSelection({ setShowSelectRoom, setHotelSelected }) {
+export function HotelSelection({ setHotelSelected, setShowRoomSelection }) {
   const { hotels, hotelsLoading } = useHotel();
 
   if (hotelsLoading) {
@@ -15,7 +15,7 @@ export function HotelSelection({ setShowSelectRoom, setHotelSelected }) {
 
   function handleHotelSelection(id) {
     setHotelSelected(hotels.find((hotel) => hotel.id === id));
-    setShowSelectRoom(true);
+    setShowRoomSelection(true);
   }
 
   return (

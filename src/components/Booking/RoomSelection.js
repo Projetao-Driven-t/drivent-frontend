@@ -13,9 +13,9 @@ export default function RoomSelection({
   setRoomSelected,
   bookingUser,
   setBookingUser,
-  setShowSelectHotel,
-  setShowSelectRoom,
-  setShowResume,
+  setShowHotelSelection,
+  setShowRoomSelection,
+  setShowBookingResume,
 }) {
   const isItRoomChange = Boolean(bookingUser.id);
   const roomIdPreviousSelected = isItRoomChange ? bookingUser.Room.id : 0;
@@ -61,17 +61,15 @@ export default function RoomSelection({
           await updateBooking(bookingUser.id, { roomId: roomSelected.id });
         }
         setBookingUser(await getBooking());
-        setShowResume(true);
-        setShowSelectRoom(false);
-        setShowSelectHotel(false);
+        setShowBookingResume(true);
+        setShowRoomSelection(false);
+        setShowHotelSelection(false);
         toast('Informações salvas com sucesso!');
       } catch (err) {
         toast('Não foi possível salvar suas informações!');
       }
     }
   }
-
-  console.log(roomSelected);
 
   return (
     <RoomSelectionStyle>

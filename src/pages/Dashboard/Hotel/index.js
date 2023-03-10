@@ -10,18 +10,18 @@ export default function Hotel() {
   const [roomSelected, setRoomSelected] = useState({});
   const [bookingUser, setBookingUser] = useState({});
 
-  const { booking, bookingLoading, getBooking } = useGetBooking();
+  const { booking, bookingLoading } = useGetBooking();
 
-  const [showSelectHotel, setShowSelectHotel] = useState(true);
-  const [showSelectRoom, setShowSelectRoom] = useState(false);
-  const [showResume, setShowResume] = useState(false);
+  const [showHotelSelection, setShowHotelSelection] = useState(true);
+  const [showRoomSelection, setShowRoomSelection] = useState(false);
+  const [showBookingResume, setShowBookingResume] = useState(false);
 
   useEffect(() => {
     if (booking) {
       setBookingUser(booking);
-      setShowSelectHotel(false);
-      setShowSelectRoom(false);
-      setShowResume(true);
+      setShowHotelSelection(false);
+      setShowRoomSelection(false);
+      setShowBookingResume(true);
     }
   }, [booking]);
 
@@ -29,36 +29,34 @@ export default function Hotel() {
     return <>Loading...</>;
   }
 
-  function changeBooking() {
-    // getBooking();
-    setShowResume(false);
-    setShowSelectHotel(true);
-  }
-
   return (
     <>
       <Title>Escolha de hotel e quarto</Title>
-      {showSelectHotel ? (
-        <HotelSelection setHotelSelected={setHotelSelected} setShowSelectRoom={setShowSelectRoom} />
+      {showHotelSelection ? (
+        <HotelSelection setHotelSelected={setHotelSelected} setShowRoomSelection={setShowRoomSelection} />
       ) : (
         ''
       )}
-      {showSelectRoom ? (
+      {showRoomSelection ? (
         <RoomSelection
           hotelSelected={hotelSelected}
           roomSelected={roomSelected}
           setRoomSelected={setRoomSelected}
           bookingUser={bookingUser}
           setBookingUser={setBookingUser}
-          setShowSelectHotel={setShowSelectHotel}
-          setShowSelectRoom={setShowSelectRoom}
-          setShowResume={setShowResume}
+          setShowHotelSelection={setShowHotelSelection}
+          setShowRoomSelection={setShowRoomSelection}
+          setShowBookingResume={setShowBookingResume}
         />
       ) : (
         ''
       )}
-      {showResume ? (
-        <BookingResume booking={bookingUser} roomSelected={roomSelected} changeBooking={changeBooking} />
+      {showBookingResume ? (
+        <BookingResume
+          bookingUser={bookingUser}
+          setShowHotelSelection={setShowHotelSelection}
+          setShowBookingResume={setShowBookingResume}
+        />
       ) : (
         ''
       )}
