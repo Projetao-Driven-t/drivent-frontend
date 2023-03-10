@@ -1,17 +1,47 @@
 import styled from 'styled-components';
 
-export function Hotel({ image, name, booking }) {
+export function Hotel({ image, name, id, handleHotelSelection, rooms }) {
+  let totalCapacity = 0;
+  let totalBooking = 0;
+  let arr = [];
+
+  rooms.forEach((room) => {
+    totalCapacity += room.capacity;
+    totalBooking += room._count.Booking;
+    if (room.capacity === 1 && !arr.includes(1)) {
+      arr.push(1);
+    } else if (room.capacity === 2 && !arr.includes(2)) {
+      arr.push(2);
+    } else if (room.capacity === 3 && !arr.includes(3)) {
+      arr.push(3);
+    }
+  });
+  let newArr = arr.sort((a, b) => a - b);
+
+  function roomsTypes(newArr) {
+    const obj = { 1: 'Single', 2: 'Double', 3: 'Triple' };
+    if (newArr.length === 1) {
+      return `${obj[newArr[0]]}`;
+    } else if (newArr.length === 2) {
+      return `${obj[newArr[0]]} e ${obj[newArr[1]]}`;
+    } else if (newArr.length === 3) {
+      return `${obj[newArr[0]]}, ${obj[newArr[1]]} e ${obj[newArr[2]]}`;
+    }
+  }
+
+  let vagas = totalCapacity - totalBooking;
+
   return (
-    <StyledHotel>
-      <img src={image} alt="owow" />
+    <StyledHotel onClick={() => handleHotelSelection(id)}>
+      <img src={image} alt={'Hotel imagem'} />
       <h1>{name}</h1>
       <Acomodar>
         <h2>Tipos de acomodação:</h2>
-        <h3>Single e Double</h3>
+        <h3>{roomsTypes(newArr)}</h3>
       </Acomodar>
       <Acomodar>
         <h2>Vagas disponíveis:</h2>
-        <h3>20</h3>
+        <h3>{vagas}</h3>
       </Acomodar>
     </StyledHotel>
   );

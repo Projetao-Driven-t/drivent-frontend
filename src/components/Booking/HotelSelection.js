@@ -1,14 +1,10 @@
-import { useEffect } from 'react';
 import styled from 'styled-components';
 import useHotel from '../../hooks/api/useHotel';
 import { Hotel } from './Hotel';
 
-export function HotelSelection() {
+export function HotelSelection({ setHotelSelected, setShowRoomSelection }) {
   const { hotels, hotelsLoading } = useHotel();
 
-  useEffect(() => {
-    console.log(hotels);
-  }, [hotels]);
   if (hotelsLoading) {
     return (
       <>
@@ -16,12 +12,25 @@ export function HotelSelection() {
       </>
     );
   }
+
+  function handleHotelSelection(id) {
+    setHotelSelected(hotels.find((hotel) => hotel.id === id));
+    setShowRoomSelection(true);
+  }
+
   return (
     <>
       <Subtitle>Primeiro, escolha seu hotel</Subtitle>
       <Hotels>
         {hotels.map((hotel) => (
-          <Hotel key={hotel.id} id={hotel.id} name={hotel.name} image={hotel.image} />
+          <Hotel
+            key={hotel.id}
+            id={hotel.id}
+            name={hotel.name}
+            image={hotel.image}
+            rooms={hotel.Rooms}
+            handleHotelSelection={handleHotelSelection}
+          />
         ))}
       </Hotels>
     </>
