@@ -1,74 +1,58 @@
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import BookingResume from '../../../components/Booking/BookingResume';
-import { HotelSelection } from '../../../components/Booking/HotelSelection';
-import RoomSelection from '../../../components/Booking/RoomSelection';
-import useGetBooking from '../../../hooks/api/useGetBooking';
+import useTicket from '../../../hooks/api/useTicket';
+import Hotels from './Hotels';
 
 export default function Hotel() {
-  const [hotelSelected, setHotelSelected] = useState({});
-  const [roomSelected, setRoomSelected] = useState({});
-  const [bookingUser, setBookingUser] = useState({});
+  const { ticket } = useTicket();
 
-  const { booking, bookingLoading } = useGetBooking();
-
-  const [showHotelSelection, setShowHotelSelection] = useState(true);
-  const [showRoomSelection, setShowRoomSelection] = useState(false);
-  const [showBookingResume, setShowBookingResume] = useState(false);
-
-  useEffect(() => {
-    if (booking) {
-      setBookingUser(booking);
-      setShowHotelSelection(false);
-      setShowRoomSelection(false);
-      setShowBookingResume(true);
-    }
-  }, [booking]);
-
-  if (bookingLoading) {
-    return <>Loading...</>;
+  if (!ticket || (ticket.TicketType.includesHotel && ticket.status !== 'PAID')) {
+    return (
+      <NoHotels>
+        <Title>Escolha de hotel e quarto</Title>
+        <Message>
+          <p>Você precisa ter confirmado pagamento antes</p>
+          <p>de fazer a escolha da hospedagem</p>
+        </Message>
+      </NoHotels>
+    );
+  } else if (!ticket.TicketType.includesHotel) {
+    return (
+      <NoHotels>
+        <Title>Escolha de hotel e quarto</Title>
+        <Message>
+          <p>Sua modalidade de ingresso não inclui hospedagem</p>
+          <p>Prossiga para a escolha de atividades</p>
+        </Message>
+      </NoHotels>
+    );
   }
 
-  return (
-    <>
-      <Title>Escolha de hotel e quarto</Title>
-      {showHotelSelection ? (
-        <HotelSelection setHotelSelected={setHotelSelected} setShowRoomSelection={setShowRoomSelection} />
-      ) : (
-        ''
-      )}
-      {showRoomSelection ? (
-        <RoomSelection
-          hotelSelected={hotelSelected}
-          roomSelected={roomSelected}
-          setRoomSelected={setRoomSelected}
-          bookingUser={bookingUser}
-          setBookingUser={setBookingUser}
-          setShowHotelSelection={setShowHotelSelection}
-          setShowRoomSelection={setShowRoomSelection}
-          setShowBookingResume={setShowBookingResume}
-        />
-      ) : (
-        ''
-      )}
-      {showBookingResume ? (
-        <BookingResume
-          bookingUser={bookingUser}
-          setShowHotelSelection={setShowHotelSelection}
-          setShowBookingResume={setShowBookingResume}
-        />
-      ) : (
-        ''
-      )}
-    </>
-  );
+  return <Hotels />;
 }
 
 const Title = styled.h1`
   font-family: 'Roboto';
-  font-weight: bold;
+  font-weight: 400;
   font-size: 34px;
   line-height: 40px;
   color: #000000;
   margin-bottom: 30px;
+`;
+
+const NoHotels = styled.div`
+  font-family: 'Roboto';
+  height: 100vh;
+`;
+
+const Message = styled.div`
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  & > p {
+    color: #8e8e8e;
+    font-size: 20px;
+    text-align: center;
+  }
 `;
