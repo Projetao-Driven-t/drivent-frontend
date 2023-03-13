@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import useHotel from '../../hooks/api/useHotel';
 import { Hotel } from './Hotel';
 
-export function HotelSelection({ setHotelSelected, setShowRoomSelection }) {
+export function HotelSelection({ hotelSelected, setHotelSelected, setShowRoomSelection }) {
   const { hotels, hotelsLoading } = useHotel();
 
   if (hotelsLoading) {
@@ -29,6 +29,7 @@ export function HotelSelection({ setHotelSelected, setShowRoomSelection }) {
             name={hotel.name}
             image={hotel.image}
             rooms={hotel.Rooms}
+            isSelectedHotel={hotel.id === hotelSelected.id}
             handleHotelSelection={handleHotelSelection}
           />
         ))}
@@ -38,7 +39,6 @@ export function HotelSelection({ setHotelSelected, setShowRoomSelection }) {
 }
 
 const Subtitle = styled.span`
-  font-family: 'Roboto';
   font-size: 20px;
   line-height: 23.5px;
   color: #8e8e8e;
@@ -46,7 +46,6 @@ const Subtitle = styled.span`
 
 const Hotels = styled.div`
   width: 100%;
-  height: 38%;
   margin: 20px 0px;
   display: flex;
   flex-direction: row;

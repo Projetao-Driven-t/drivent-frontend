@@ -1,4 +1,3 @@
-import Typography from '@material-ui/core/Typography';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from '../Form/Button';
@@ -25,7 +24,6 @@ export default function BookingResume({ bookingUser, setShowHotelSelection, setS
 
   return (
     <BookingResumeStyle>
-      <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
       <Subtitle>Você já escolheu seu quarto</Subtitle>
       <ResumeContainer>
         <img src={bookingUser.Room.Hotel.image} alt={'hotel'} />
@@ -49,14 +47,6 @@ const BookingResumeStyle = styled.div`
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
     border-radius: 4px;
     border: none;
-  }
-`;
-
-const StyledTypography = styled(Typography)`
-  margin-bottom: 20px !important;
-
-  h4 {
-    color: #454545;
   }
 `;
 
