@@ -101,7 +101,6 @@ export default function TicketSelection({ setTicketUser }) {
 const Title = styled.h1`
   width: 43%;
   height: auto;
-  font-family: 'Roboto';
   font-style: normal;
   font-size: 32px;
   color: #000000;
@@ -121,7 +120,6 @@ const ContainerTicketTypes = styled.div`
     font-size: 20px;
     margin-bottom: 10px;
     color: #8e8e8e;
-    font-family: 'Roboto';
   }
 
   h3 {

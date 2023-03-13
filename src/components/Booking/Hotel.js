@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export function Hotel({ image, name, id, handleHotelSelection, rooms }) {
+export function Hotel({ image, name, id, isSelectedHotel, handleHotelSelection, rooms }) {
   let totalCapacity = 0;
   let totalBooking = 0;
   let arr = [];
@@ -32,7 +32,7 @@ export function Hotel({ image, name, id, handleHotelSelection, rooms }) {
   let vagas = totalCapacity - totalBooking;
 
   return (
-    <StyledHotel onClick={() => handleHotelSelection(id)}>
+    <StyledHotel onClick={() => handleHotelSelection(id)} isSelectedHotel={isSelectedHotel}>
       <img src={image} alt={'Hotel imagem'} />
       <h1>{name}</h1>
       <Acomodar>
@@ -53,26 +53,24 @@ const Acomodar = styled.div`
 
   h2 {
     margin-bottom: 4px;
-    font-family: 'Roboto';
     font-weight: bold;
     font-size: 13px;
   }
   h3 {
     margin-bottom: 7px;
-    font-family: 'Roboto';
     font-size: 12px;
   }
 `;
 
 const StyledHotel = styled.div`
-  width: 25%;
-  height: 100%;
+  width: 200px;
+  height: 240px;
   margin-right: 20px;
   margin-bottom: 20px;
   padding-left: 2%;
   display: flex;
   flex-direction: column;
-  background-color: #ebebeb;
+  background-color: ${(props) => (props.isSelectedHotel ? '#ffeed2' : '#ebebeb')};
   border-radius: 10px;
 
   img {
@@ -85,7 +83,6 @@ const StyledHotel = styled.div`
   }
 
   h1 {
-    font-family: 'Roboto';
     font-size: 20px;
     color: #343434;
     margin: 5px 0;

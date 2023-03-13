@@ -132,7 +132,6 @@ const ConfirmContainer = styled.div`
   margin-top: 20px;
 
   h2 {
-    font-family: 'Roboto';
     font-size: 16px;
     line-height: 19px;
     color: #454545;
@@ -140,7 +139,6 @@ const ConfirmContainer = styled.div`
 `;
 
 const Subtitle = styled.span`
-  font-family: 'Roboto';
   font-size: 20px;
   line-height: 23.5px;
   color: #8e8e8e;
@@ -150,7 +148,6 @@ const StyledTypography = styled(Typography)`
   margin-bottom: 20px !important;
 
   h4 {
-    font-family: 'Roboto';
     color: #454545;
   }
 `;
@@ -168,14 +165,12 @@ const BotaoTemporario = styled.div`
   margin-bottom: 30px;
 
   h1 {
-    font-family: 'Roboto';
     font-size: 16px;
     line-height: 19px;
     color: #454545;
   }
 
   h2 {
-    font-family: 'Roboto';
     font-size: 14px;
     color: #898989;
     margin-top: 8px;

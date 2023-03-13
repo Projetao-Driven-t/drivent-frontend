@@ -109,7 +109,6 @@ const RoomSelectionStyle = styled.div`
 `;
 
 const Subtitle = styled.span`
-  font-family: 'Roboto';
   font-size: 20px;
   line-height: 23.5px;
   color: #8e8e8e;

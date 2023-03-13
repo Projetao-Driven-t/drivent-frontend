@@ -33,7 +33,6 @@ const SummaryStyle = styled.div`
     font-size: 18px;
     margin-bottom: 10px;
     color: #8e8e8e;
-    font-family: 'Roboto';
   }
 
   button {

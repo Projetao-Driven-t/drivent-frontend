@@ -1,51 +1,116 @@
+import { Typography } from '@material-ui/core';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import BookingResume from '../../../components/Booking/BookingResume';
+import { HotelSelection } from '../../../components/Booking/HotelSelection';
+import RoomSelection from '../../../components/Booking/RoomSelection';
+import useGetBooking from '../../../hooks/api/useGetBooking';
 import useTicket from '../../../hooks/api/useTicket';
-import Hotels from './Hotels';
 
 export default function Hotel() {
   const { ticket } = useTicket();
 
-  if (!ticket || (ticket.TicketType.includesHotel && ticket.status !== 'PAID')) {
-    return (
-      <NoHotels>
-        <Title>Escolha de hotel e quarto</Title>
+  const [hotelSelected, setHotelSelected] = useState({});
+  const [roomSelected, setRoomSelected] = useState({});
+  const [bookingUser, setBookingUser] = useState({});
+  const { booking, bookingLoading } = useGetBooking();
+
+  const [showHotelSelection, setShowHotelSelection] = useState(false);
+  const [showRoomSelection, setShowRoomSelection] = useState(false);
+  const [showBookingResume, setShowBookingResume] = useState(false);
+  const [showErrorMessageNotPaidTicket, setShowErrorMessageNotPaidTicket] = useState(false);
+  const [showErrorMessageNotIncludesHotel, setShowErrorMessageNotIncludesHotel] = useState(false);
+
+  useEffect(() => {
+    if (booking) {
+      setBookingUser(booking);
+      setShowErrorMessageNotPaidTicket(false);
+      setShowErrorMessageNotIncludesHotel(false);
+      setShowHotelSelection(false);
+      setShowRoomSelection(false);
+      setShowBookingResume(true);
+    }
+  }, [booking]);
+
+  useEffect(() => {
+    if (!ticket || ticket.status !== 'PAID') {
+      setShowErrorMessageNotPaidTicket(true);
+      setShowErrorMessageNotIncludesHotel(false);
+    } else if (!ticket.TicketType.includesHotel) {
+      setShowErrorMessageNotIncludesHotel(true);
+      setShowErrorMessageNotPaidTicket(false);
+    } else if (ticket.TicketType.includesHotel) {
+      setShowErrorMessageNotPaidTicket(false);
+      setShowErrorMessageNotIncludesHotel(false);
+      setShowHotelSelection(true);
+    }
+  }, [ticket]);
+
+  if (bookingLoading) {
+    return <>Loading...</>;
+  }
+
+  return (
+    <>
+      <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
+      {showErrorMessageNotPaidTicket ? (
         <Message>
           <p>Você precisa ter confirmado pagamento antes</p>
           <p>de fazer a escolha da hospedagem</p>
         </Message>
-      </NoHotels>
-    );
-  } else if (!ticket.TicketType.includesHotel) {
-    return (
-      <NoHotels>
-        <Title>Escolha de hotel e quarto</Title>
+      ) : (
+        ''
+      )}
+      {showErrorMessageNotIncludesHotel ? (
         <Message>
           <p>Sua modalidade de ingresso não inclui hospedagem</p>
           <p>Prossiga para a escolha de atividades</p>
         </Message>
-      </NoHotels>
-    );
-  }
-
-  return <Hotels />;
+      ) : (
+        ''
+      )}
+      {showHotelSelection ? (
+        <HotelSelection
+          hotelSelected={hotelSelected}
+          setHotelSelected={setHotelSelected}
+          setShowRoomSelection={setShowRoomSelection}
+        />
+      ) : (
+        ''
+      )}
+      {showRoomSelection ? (
+        <RoomSelection
+          hotelSelected={hotelSelected}
+          roomSelected={roomSelected}
+          setRoomSelected={setRoomSelected}
+          bookingUser={bookingUser}
+          setBookingUser={setBookingUser}
+          setShowHotelSelection={setShowHotelSelection}
+          setShowRoomSelection={setShowRoomSelection}
+          setShowBookingResume={setShowBookingResume}
+        />
+      ) : (
+        ''
+      )}
+      {showBookingResume ? (
+        <BookingResume
+          bookingUser={bookingUser}
+          setShowHotelSelection={setShowHotelSelection}
+          setShowBookingResume={setShowBookingResume}
+        />
+      ) : (
+        ''
+      )}
+    </>
+  );
 }
 
-const Title = styled.h1`
-  font-family: 'Roboto';
-  font-weight: 400;
-  font-size: 34px;
-  line-height: 40px;
-  color: #000000;
-  margin-bottom: 30px;
-`;
-
-const NoHotels = styled.div`
-  font-family: 'Roboto';
-  height: 100vh;
+const StyledTypography = styled(Typography)`
+  margin-bottom: 20px !important;
 `;
 
 const Message = styled.div`
-  height: 60vh;
+  height: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
