@@ -42,7 +42,11 @@ export default function Hotel() {
     } else if (ticket.TicketType.includesHotel) {
       setShowErrorMessageNotPaidTicket(false);
       setShowErrorMessageNotIncludesHotel(false);
-      setShowHotelSelection(true);
+      if (booking) {
+        setShowHotelSelection(false);
+      } else {
+        setShowHotelSelection(true);
+      }
     }
   }, [ticket]);
 
