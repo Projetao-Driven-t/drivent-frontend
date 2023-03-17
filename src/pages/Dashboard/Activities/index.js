@@ -8,6 +8,8 @@ import ShowActivitiesList from '../../../components/Activities/ShowActivitiesLis
 export default function Activities() {
   const { ticket } = useTicket();
 
+  const [dayActivities, setDayActivities] = useState([]);
+
   const [showErrorMessageNotPaidTicket, setShowErrorMessageNotPaidTicket] = useState(false);
   const [showErrorMessageNotNeedActivities, setShowErrorMessageNotNeedActivities] = useState(false);
   const [showActivitiesDaySelection, setShowActivitiesDaySelection] = useState(false);
@@ -25,6 +27,8 @@ export default function Activities() {
       setShowActivitiesDaySelection(true);
     }
   }, [ticket]);
+
+  console.log(dayActivities);
 
   return (
     <>
@@ -45,13 +49,14 @@ export default function Activities() {
       ) : (
         ''
       )}
-      {showActivitiesDaySelection ? <ShowActivitiesList onlyDate={'2023-03-16'} /> : ''}
+      {dayActivities.length === 0 ? <Subtitle>Primeiro, filtre pelo dia do evento: </Subtitle> : ''}
+      {showActivitiesDaySelection ? <ActivitiesDaySelection setDayActivities={setDayActivities} /> : ''}
     </>
   );
 }
 
 const StyledTypography = styled(Typography)`
-  margin-bottom: 20px !important;
+  margin-bottom: 30px !important;
 `;
 
 const Message = styled.div`
@@ -65,4 +70,10 @@ const Message = styled.div`
     font-size: 20px;
     text-align: center;
   }
+`;
+
+const Subtitle = styled.span`
+  font-size: 20px;
+  line-height: 23.5px;
+  color: #8e8e8e;
 `;
