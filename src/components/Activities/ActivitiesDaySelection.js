@@ -1,9 +1,10 @@
 import dayjs from 'dayjs';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import useActivitiesDates from '../../hooks/api/useActivitiesDates';
 import useDayActivities from '../../hooks/api/useDayActivities';
 import Button from '../Form/Button';
+import ShowActivitiesList from './ShowActivitiesList';
 
 export default function ActivitiesDaySelection({ setDayActivities }) {
   const WEEK_DAYS = {
@@ -16,7 +17,7 @@ export default function ActivitiesDaySelection({ setDayActivities }) {
     Saturday: 'Sábado',
   };
   const { dates, datesLoading } = useActivitiesDates();
-  const { dayActivities, getDayActivities } = useDayActivities();
+  const { dayActivities, getDayActivities, dayActivitiesLoading } = useDayActivities();
 
   useEffect(() => {
     if (dayActivities) {
@@ -32,14 +33,22 @@ export default function ActivitiesDaySelection({ setDayActivities }) {
   if (datesLoading) {
     return <></>;
   }
+
   return (
-    <Dates>
-      {dates.map(({ date }, index) => (
-        <StyledButton key={index} onClick={() => getDayActivities(date)}>
-          {parseDateToStringPtButton(date)}
-        </StyledButton>
-      ))}
-    </Dates>
+    <>
+      <Dates>
+        {dates.map(({ date }, index) => (
+          <StyledButton key={index} onClick={() => getDayActivities(date)}>
+            {parseDateToStringPtButton(date)}
+          </StyledButton>
+        ))}
+      </Dates>
+      {dayActivities !== null ? (
+        <ShowActivitiesList dayActivities={dayActivities} dayActivitiesLoading={dayActivitiesLoading} />
+      ) : (
+        ''
+      )}
+    </>
   );
 }
 
