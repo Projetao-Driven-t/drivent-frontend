@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import useGetActivities from '../../hooks/api/useActivities';
 import styled from 'styled-components';
+import useDayActivities from '../../hooks/api/useDayActivities';
 
-export default function ShowActivitiesList({ onlyDate }) {
-  const { activities, activitiesLoading } = useGetActivities(onlyDate);
-
-  if (activitiesLoading) {
+export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading }) {
+  if (dayActivitiesLoading) {
     return <>Loading....</>;
   }
 
-  console.log(activities, 'ATIVIDADESSS');
+  console.log(dayActivities, 'Recebi no componente LISTAGEM');
   return (
     <>
       <EventLocalContainer>
-        <h1>{activities[1].name}</h1>
+        <h1>asdasd</h1>
       </EventLocalContainer>
     </>
   );

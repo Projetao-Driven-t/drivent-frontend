@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ActivitiesDaySelection from '../../../components/Activities/ActivitiesDaySelection';
 import useTicket from '../../../hooks/api/useTicket';
-import ShowActivitiesList from '../../../components/Activities/ShowActivitiesList';
 
 export default function Activities() {
   const { ticket } = useTicket();
@@ -28,7 +27,7 @@ export default function Activities() {
     }
   }, [ticket]);
 
-  console.log(dayActivities);
+  console.log(dayActivities, 'Victor deixou pra gente usar');
 
   return (
     <>
