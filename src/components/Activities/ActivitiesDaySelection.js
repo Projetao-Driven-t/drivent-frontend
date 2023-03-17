@@ -1,15 +1,57 @@
-import React from 'react';
+import dayjs from 'dayjs';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-export default function ActivitiesDaySelection() {
+import useActivitiesDates from '../../hooks/api/useActivitiesDates';
+import useDayActivities from '../../hooks/api/useDayActivities';
+import Button from '../Form/Button';
+
+export default function ActivitiesDaySelection({ setDayActivities }) {
+  const WEEK_DAYS = {
+    Sunday: 'Domingo',
+    Monday: 'Segunda',
+    Tuesday: 'Terça',
+    Wednesday: 'Quarta',
+    Thursday: 'Quinta',
+    Friday: 'Sexta',
+    Saturday: 'Sábado',
+  };
+  const { dates, datesLoading } = useActivitiesDates();
+  const { dayActivities, getDayActivities } = useDayActivities();
+
+  useEffect(() => {
+    if (dayActivities) {
+      setDayActivities(dayActivities);
+    }
+  }, [dayActivities]);
+
+  function parseDateToStringPtButton(date) {
+    const weekDayPt = WEEK_DAYS[dayjs(date).format('dddd')];
+    return weekDayPt + dayjs(date).format('DD/MM');
+  }
+
+  if (datesLoading) {
+    return <></>;
+  }
   return (
-    <>
-      <Subtitle>Primeiro, filtre pelo dia do evento: </Subtitle>
-    </>
+    <Dates>
+      {dates.map(({ date }, index) => (
+        <StyledButton key={index} onClick={() => getDayActivities(date)}>
+          {parseDateToStringPtButton(date)}
+        </StyledButton>
+      ))}
+    </Dates>
   );
 }
 
-const Subtitle = styled.span`
-  font-size: 20px;
-  line-height: 23.5px;
-  color: #8e8e8e;
+const Dates = styled.div`
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+`;
+
+const StyledButton = styled(Button)`
+  width: 131px;
 `;
