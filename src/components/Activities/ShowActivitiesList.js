@@ -8,8 +8,12 @@ import fullyEvent from '../../assets/images/fullevent.png';
 import checkCircle from '../../assets/images/checkcircle.png';
 import colors from '../../assets/styles/colors';
 import usePostSubscription from '../../hooks/api/usePostSubscription';
+import UserContext from '../../contexts/UserContext';
 
 export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading, setDayActivities }) {
+  const { userData } = useContext(UserContext);
+
+  console.log(userData.user.id, 'Buscando UserId');
   if (dayActivitiesLoading) {
     return <>Loading....</>;
   }
@@ -42,7 +46,9 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
             <h1>{room.ActivityRoom.name}</h1>
             <ActivitiesListContainer>
               <EventInformations
-                backColor={room.ActivitySubscription.find((subs) => subs.userId === 8) ? VerdeClaro : Cinza}
+                backColor={
+                  room.ActivitySubscription.find((subs) => subs.userId === userData.user.id) ? VerdeClaro : Cinza
+                }
               >
                 <EventDetails>
                   <span>
@@ -53,21 +59,21 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
                   </span>
                 </EventDetails>
                 <BreakLine />
-                <VacancyIcon>
+                <VacancyIcon colorText={room.capacity === 0 ? Vermelho : Verde}>
                   {room.capacity === 0 ? (
                     <>
                       <img src={fullyEvent} alt="Evento esgotado" />
-                      <span colorText={Vermelho}>esgotado</span>
+                      <h6>esgotado</h6>
                     </>
                   ) : (
-                    <>
+                    /*  <>
                       <img src={door} alt="Vagas disponiveis" onClick={() => postSubscription(room.id)} />
                       <span colorText={Verde}>{room.capacity} vagas</span>
+                    </> */
+                    <>
+                      <img src={checkCircle} alt="Já inscrito" onClick={() => console.log(room.ActivityRoom.id)} />
+                      <h6>Inscrito</h6>
                     </>
-                    // <>
-                    //   <img src={checkCircle} alt="Já inscrito" onClick={() => console.log(room.ActivityRoom.id)} />
-                    //   <span colorText={Verde}>Inscrito</span>
-                    // </>
                   )}
                 </VacancyIcon>
               </EventInformations>
@@ -80,24 +86,6 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
 }
 
 //Falta pegar o id do usuario para fazer a requisição, encontrar a logica para saber se o id do usuario está naquele evento e terminar a lógica do inscrito/disponivel/esgotado
-
-const VacancyIcon = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 25%;
-
-  img {
-    height: 30%;
-    object-fit: cover;
-  }
-  span {
-    color: ${(props) => props.colorText};
-    font-size: 9px;
-    margin-top: 5px;
-  }
-`;
 
 const BreakLine = styled.div`
   height: 80%;
@@ -171,5 +159,23 @@ const EventInformations = styled.div`
     line-height: 14px;
     color: #343434;
     margin-top: 6px;
+  }
+`;
+
+const VacancyIcon = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 25%;
+
+  img {
+    height: 30%;
+    object-fit: cover;
+  }
+  h6 {
+    color: ${(props) => props.colorText};
+    font-size: 9px;
+    margin-top: 5px;
   }
 `;
