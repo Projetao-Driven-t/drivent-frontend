@@ -1,19 +1,20 @@
-import React, { useEffect, useContext } from 'react';
-import useGetActivities from '../../hooks/api/useActivities';
+import React, { useEffect, useContext, useState } from 'react';
 import styled from 'styled-components';
-import useDayActivities from '../../hooks/api/useDayActivities';
-import Activities from '../../pages/Dashboard/Activities';
 import door from '../../assets/images/greendoor.png';
 import fullyEvent from '../../assets/images/fullevent.png';
 import checkCircle from '../../assets/images/checkcircle.png';
 import colors from '../../assets/styles/colors';
 import usePostSubscription from '../../hooks/api/usePostSubscription';
 import UserContext from '../../contexts/UserContext';
+import { toast } from 'react-toastify';
 
 export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading, setDayActivities }) {
   const { userData } = useContext(UserContext);
 
-  console.log(userData.user.id, 'Buscando UserId');
+  const testeHoraum =parseInt(dayActivities[2].startTime);
+  const testeHoradois =parseInt(dayActivities[2].endTime);
+  console.log(testeHoradois-testeHoraum, 'askadkdsaksad');
+
   if (dayActivitiesLoading) {
     return <>Loading....</>;
   }
@@ -25,23 +26,20 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
   async function postSubscription(activityId) {
     try {
       await postActivity({ activityId: activityId });
-      console.log('Deu certo');
     } catch (err) {
-      console.log('Não foi possivel se inscrever nesse evento');
-      console.log(err.message);
+      throw err.message;
     }
   }
 
   const { Verde, Vermelho, Cinza, VerdeClaro } = colors;
-  console.log(dayActivities, 'Recebi no componente LISTAGEM');
   return (
     <MainContainer>
-      {dayActivities.map((room) => (
-        <EventLocalContainer>
-          <EventRoomContainer>
+      {dayActivities.map((room, index) => (
+        <EventLocalContainer key={index}>
+          <EventRoomContainer >
             <h1>{room.ActivityRoom.name}</h1>
             <ActivitiesListContainer>
-              {room.ActivitySubscription.find((subs) => subs.userId === 8) ? (
+              {room.ActivitySubscription.find((subs) => subs.userId === userData.user.id) ? (
                 <EventInformations backColor={VerdeClaro}>
                   <EventDetails>
                     <span>
@@ -53,12 +51,16 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
                   </EventDetails>
                   <BreakLine />
                   <VacancyIcon colorText={Verde}>
-                    <img src={checkCircle} alt="Já inscrito" onClick={() => console.log(room.id)} />
+                    <img
+                      src={checkCircle}
+                      alt="Já inscrito"
+                      onClick={() => toast('Você já está inscrito nesse evento :D')}
+                    />
                     <h6 colorText={Verde}>Inscrito</h6>
                   </VacancyIcon>
                 </EventInformations>
               ) : (
-                <EventInformations backColor={Cinza}>
+                <EventInformations backColor={Cinza} heighContainer = {(parseInt(room.endTime) - parseInt(room.startTime))}>
                   <EventDetails>
                     <span>
                       <strong>{room.name}</strong>
@@ -71,7 +73,11 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
                   <VacancyIcon colorText={room.capacity === 0 ? Vermelho : Verde}>
                     {room.capacity === 0 ? (
                       <>
-                        <img src={fullyEvent} alt="Evento esgotado" />
+                        <img
+                          src={fullyEvent}
+                          alt="Evento esgotado"
+                          onClick={() => toast('O evento não possui vagas =(')}
+                        />
                         <h6>esgotado</h6>
                       </>
                     ) : (
@@ -123,6 +129,7 @@ const EventRoomContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 60px;
+ 
 
   h1 {
     font-style: normal;
@@ -146,7 +153,7 @@ const EventInformations = styled.div`
   justify-content: space-between;
   background: ${(props) => props.backColor};
   border-radius: 5px;
-  height: 80px;
+  height: ${(props) => props.heighContainer === 2 ? '160px' : '80px'};
 
   h1 {
     font-weight: 700;
@@ -174,7 +181,7 @@ const VacancyIcon = styled.div`
   width: 25%;
 
   img {
-    height: 30%;
+    height: 20px;;
     object-fit: cover;
     cursor: pointer;
   }

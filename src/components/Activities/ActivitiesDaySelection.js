@@ -42,7 +42,7 @@ export default function ActivitiesDaySelection({ setDayActivities }) {
           <StyledButton
             key={index}
             index={index}
-            selectedButton={selectedButton}
+            selectedbutton={selectedButton}
             onClick={() => {
               getDayActivities(date); setSelectedButton(index);
             }}
@@ -75,5 +75,5 @@ const Dates = styled.div`
 
 const StyledButton = styled(Button)`
   width: 131px;
-  background: ${(props) => props.selectedButton === props.index && '#FFD37D'}!important;
+  background: ${(props) => props.selectedbutton === props.index && '#FFD37D'}!important;
 `;
