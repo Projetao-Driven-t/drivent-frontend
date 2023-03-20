@@ -7,6 +7,8 @@ import useTicket from '../../../hooks/api/useTicket';
 export default function Activities() {
   const { ticket } = useTicket();
 
+  console.log(ticket);
+
   const [dayActivities, setDayActivities] = useState([]);
 
   const [showErrorMessageNotPaidTicket, setShowErrorMessageNotPaidTicket] = useState(false);

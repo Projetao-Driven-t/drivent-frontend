@@ -20,11 +20,7 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
 
   const { postActivity } = usePostSubscription();
 
-  useEffect(() => {
-    if (dayActivities) {
-      setDayActivities(dayActivities);
-    }
-  }, [dayActivities]);
+  useEffect(() => {}, [dayActivities]);
 
   async function postSubscription(activityId) {
     try {
@@ -45,38 +41,48 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
           <EventRoomContainer>
             <h1>{room.ActivityRoom.name}</h1>
             <ActivitiesListContainer>
-              <EventInformations
-                backColor={
-                  room.ActivitySubscription.find((subs) => subs.userId === userData.user.id) ? VerdeClaro : Cinza
-                }
-              >
-                <EventDetails>
-                  <span>
-                    <strong>{room.name}</strong>
-                  </span>
-                  <span>
-                    {room.startTime} - {room.endTime}
-                  </span>
-                </EventDetails>
-                <BreakLine />
-                <VacancyIcon colorText={room.capacity === 0 ? Vermelho : Verde}>
-                  {room.capacity === 0 ? (
-                    <>
-                      <img src={fullyEvent} alt="Evento esgotado" />
-                      <h6>esgotado</h6>
-                    </>
-                  ) : (
-                    /*  <>
-                      <img src={door} alt="Vagas disponiveis" onClick={() => postSubscription(room.id)} />
-                      <span colorText={Verde}>{room.capacity} vagas</span>
-                    </> */
-                    <>
-                      <img src={checkCircle} alt="Já inscrito" onClick={() => console.log(room.ActivityRoom.id)} />
-                      <h6>Inscrito</h6>
-                    </>
-                  )}
-                </VacancyIcon>
-              </EventInformations>
+              {room.ActivitySubscription.find((subs) => subs.userId === 8) ? (
+                <EventInformations backColor={VerdeClaro}>
+                  <EventDetails>
+                    <span>
+                      <strong>{room.name}</strong>
+                    </span>
+                    <span>
+                      {room.startTime} - {room.endTime}
+                    </span>
+                  </EventDetails>
+                  <BreakLine />
+                  <VacancyIcon colorText={Verde}>
+                    <img src={checkCircle} alt="Já inscrito" onClick={() => console.log(room.id)} />
+                    <h6 colorText={Verde}>Inscrito</h6>
+                  </VacancyIcon>
+                </EventInformations>
+              ) : (
+                <EventInformations backColor={Cinza}>
+                  <EventDetails>
+                    <span>
+                      <strong>{room.name}</strong>
+                    </span>
+                    <span>
+                      {room.startTime} - {room.endTime}
+                    </span>
+                  </EventDetails>
+                  <BreakLine />
+                  <VacancyIcon colorText={room.capacity === 0 ? Vermelho : Verde}>
+                    {room.capacity === 0 ? (
+                      <>
+                        <img src={fullyEvent} alt="Evento esgotado" />
+                        <h6>esgotado</h6>
+                      </>
+                    ) : (
+                      <>
+                        <img src={door} alt="Vagas disponiveis" onClick={() => postSubscription(room.id)} />
+                        <h6>{room.capacity} vagas</h6>
+                      </>
+                    )}
+                  </VacancyIcon>
+                </EventInformations>
+              )}
             </ActivitiesListContainer>
           </EventRoomContainer>
         </EventLocalContainer>
@@ -84,8 +90,6 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
     </MainContainer>
   );
 }
-
-//Falta pegar o id do usuario para fazer a requisição, encontrar a logica para saber se o id do usuario está naquele evento e terminar a lógica do inscrito/disponivel/esgotado
 
 const BreakLine = styled.div`
   height: 80%;
@@ -172,6 +176,7 @@ const VacancyIcon = styled.div`
   img {
     height: 30%;
     object-fit: cover;
+    cursor: pointer;
   }
   h6 {
     color: ${(props) => props.colorText};
