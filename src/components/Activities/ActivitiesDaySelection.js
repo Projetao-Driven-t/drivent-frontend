@@ -44,7 +44,11 @@ export default function ActivitiesDaySelection({ setDayActivities }) {
         ))}
       </Dates>
       {dayActivities !== null ? (
-        <ShowActivitiesList dayActivities={dayActivities} dayActivitiesLoading={dayActivitiesLoading} />
+        <ShowActivitiesList
+          dayActivities={dayActivities}
+          dayActivitiesLoading={dayActivitiesLoading}
+          setDayActivities={setDayActivities}
+        />
       ) : (
         ''
       )}
