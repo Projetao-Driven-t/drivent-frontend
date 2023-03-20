@@ -19,3 +19,13 @@ export async function getDayActivitiesApi(day, token) {
 
   return response.data;
 }
+
+export async function postActivity(body, token) {
+  const response = await api.post('/activities/subscription', body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
