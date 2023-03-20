@@ -18,6 +18,7 @@ export default function ActivitiesDaySelection({ setDayActivities }) {
   };
   const { dates, datesLoading } = useActivitiesDates();
   const { dayActivities, getDayActivities, dayActivitiesLoading } = useDayActivities();
+  const [selectedButton, setSelectedButton] = useState();
 
   useEffect(() => {
     if (dayActivities) {
@@ -38,7 +39,14 @@ export default function ActivitiesDaySelection({ setDayActivities }) {
     <>
       <Dates>
         {dates.map(({ date }, index) => (
-          <StyledButton key={index} onClick={() => getDayActivities(date)}>
+          <StyledButton
+            key={index}
+            index={index}
+            selectedButton={selectedButton}
+            onClick={() => {
+              getDayActivities(date); setSelectedButton(index);
+            }}
+          >
             {parseDateToStringPtButton(date)}
           </StyledButton>
         ))}
@@ -67,4 +75,5 @@ const Dates = styled.div`
 
 const StyledButton = styled(Button)`
   width: 131px;
+  background: ${(props) => props.selectedButton === props.index && '#FFD37D'}!important;
 `;
