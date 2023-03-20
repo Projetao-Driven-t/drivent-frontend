@@ -41,36 +41,6 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
           <EventRoomContainer>
             <h1>{room.ActivityRoom.name}</h1>
             <ActivitiesListContainer>
-              <EventInformations
-                backColor={room.ActivitySubscription.find((subs) => subs.userId === 8) ? VerdeClaro : Cinza}
-              >
-                <EventDetails>
-                  <span>
-                    <strong>{room.name}</strong>
-                  </span>
-                  <span>
-                    {room.startTime} - {room.endTime}
-                  </span>
-                </EventDetails>
-                <BreakLine />
-                <VacancyIcon>
-                  {room.capacity === 0 ? (
-                    <>
-                      <img src={fullyEvent} alt="Evento esgotado" />
-                      <span colorText={Vermelho}>esgotado</span>
-                    </>
-                  ) : (
-                    <>
-                      <img src={door} alt="Vagas disponiveis" onClick={() => postSubscription(room.id)} />
-                      <span colorText={Verde}>{room.capacity} vagas</span>
-                    </>
-                    // <>
-                    //   <img src={checkCircle} alt="Já inscrito" onClick={() => console.log(room.ActivityRoom.id)} />
-                    //   <span colorText={Verde}>Inscrito</span>
-                    // </>
-                  )}
-                </VacancyIcon>
-              </EventInformations>
             </ActivitiesListContainer>
           </EventRoomContainer>
         </EventLocalContainer>
@@ -78,26 +48,6 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
     </MainContainer>
   );
 }
-
-//Falta pegar o id do usuario para fazer a requisição, encontrar a logica para saber se o id do usuario está naquele evento e terminar a lógica do inscrito/disponivel/esgotado
-
-const VacancyIcon = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 25%;
-
-  img {
-    height: 30%;
-    object-fit: cover;
-  }
-  span {
-    color: ${(props) => props.colorText};
-    font-size: 9px;
-    margin-top: 5px;
-  }
-`;
 
 const BreakLine = styled.div`
   height: 80%;
@@ -171,5 +121,23 @@ const EventInformations = styled.div`
     line-height: 14px;
     color: #343434;
     margin-top: 6px;
+  }
+`;
+
+const VacancyIcon = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 25%;
+
+  img {
+    height: 30%;
+    object-fit: cover;
+  }
+  span {
+    color: ${(props) => props.colorText};
+    font-size: 15px;
+    margin-top: 5px;
   }
 `;
