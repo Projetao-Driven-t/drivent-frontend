@@ -8,19 +8,19 @@ import fullyEvent from '../../assets/images/fullevent.png';
 import checkCircle from '../../assets/images/checkcircle.png';
 import colors from '../../assets/styles/colors';
 import usePostSubscription from '../../hooks/api/usePostSubscription';
+import UserContext from '../../contexts/UserContext';
 
 export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading, setDayActivities }) {
+  const { userData } = useContext(UserContext);
+
+  console.log(userData.user.id, 'Buscando UserId');
   if (dayActivitiesLoading) {
     return <>Loading....</>;
   }
 
   const { postActivity } = usePostSubscription();
 
-  useEffect(() => {
-    if (dayActivities) {
-      setDayActivities(dayActivities);
-    }
-  }, [dayActivities]);
+  useEffect(() => {}, [dayActivities]);
 
   async function postSubscription(activityId) {
     try {
@@ -41,6 +41,48 @@ export default function ShowActivitiesList({ dayActivities, dayActivitiesLoading
           <EventRoomContainer>
             <h1>{room.ActivityRoom.name}</h1>
             <ActivitiesListContainer>
+              {room.ActivitySubscription.find((subs) => subs.userId === 8) ? (
+                <EventInformations backColor={VerdeClaro}>
+                  <EventDetails>
+                    <span>
+                      <strong>{room.name}</strong>
+                    </span>
+                    <span>
+                      {room.startTime} - {room.endTime}
+                    </span>
+                  </EventDetails>
+                  <BreakLine />
+                  <VacancyIcon colorText={Verde}>
+                    <img src={checkCircle} alt="Já inscrito" onClick={() => console.log(room.id)} />
+                    <h6 colorText={Verde}>Inscrito</h6>
+                  </VacancyIcon>
+                </EventInformations>
+              ) : (
+                <EventInformations backColor={Cinza}>
+                  <EventDetails>
+                    <span>
+                      <strong>{room.name}</strong>
+                    </span>
+                    <span>
+                      {room.startTime} - {room.endTime}
+                    </span>
+                  </EventDetails>
+                  <BreakLine />
+                  <VacancyIcon colorText={room.capacity === 0 ? Vermelho : Verde}>
+                    {room.capacity === 0 ? (
+                      <>
+                        <img src={fullyEvent} alt="Evento esgotado" />
+                        <h6>esgotado</h6>
+                      </>
+                    ) : (
+                      <>
+                        <img src={door} alt="Vagas disponiveis" onClick={() => postSubscription(room.id)} />
+                        <h6>{room.capacity} vagas</h6>
+                      </>
+                    )}
+                  </VacancyIcon>
+                </EventInformations>
+              )}
             </ActivitiesListContainer>
           </EventRoomContainer>
         </EventLocalContainer>
@@ -134,10 +176,11 @@ const VacancyIcon = styled.div`
   img {
     height: 30%;
     object-fit: cover;
+    cursor: pointer;
   }
-  span {
+  h6 {
     color: ${(props) => props.colorText};
-    font-size: 15px;
+    font-size: 9px;
     margin-top: 5px;
   }
 `;
